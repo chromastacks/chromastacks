@@ -195,36 +195,66 @@
         </div>
     </div>
 
-    <script>
-        const database = {
-            '138': { data: 'ARTIST: Inyai-ewa <span class="cite">[134]</span><br>WORK: Aripa, figura antropomorfa <span class="cite">[133]</span><br>MATERIAL: Fusta tallada amb incisions <span class="cite">[135]</span><br>PROVENANCE: MEB CF 5258. Collecció Folch <span class="cite">[136]</span>' },
-            '106': { data: 'ARTIST: Ruth Asawa <span class="cite">[100]</span><br>WORK: Untitled S.393 <span class="cite">[101]</span><br>MATERIAL: Steel wire <span class="cite">[103]</span><br>PROVENANCE: Private collection <span class="cite">[104]</span>' },
-            '95': { data: 'ARTIST: Edward Krasiński <span class="cite">[90]</span><br>WORK: Untitled 1965 <span class="cite">[91]</span><br>MATERIAL: Painted wood and metal wire <span class="cite">[92]</span><br>PROVENANCE: Gift of Jo Carole and Ronald S. Lauder, 2015 <span class="cite">[93]</span>' },
-            '85': { data: 'ARTIST: Marcel Duchamp <span class="cite">[79]</span><br>WORK: In Advance of the broken Arm 1964 <span class="cite">[80]</span><br>MATERIAL: Wood and galvanized-iron snow shovel <span class="cite">[82]</span><br>PROVENANCE: Gift of The Jerry and Emily Spiegel Family Foundation, 2005 <span class="cite">[83]</span>' },
-            '117': { data: 'ARTIST: Alexander Calder <span class="cite">[111]</span><br>WORK: 23 Spreading Leaves 1945 <span class="cite">[112]</span><br>MATERIAL: Metal and paint <span class="cite">[113]</span><br>PROVENANCE: Fisher family 2001 <span class="cite">[115]</span>' },
-            '74': { data: 'ARTIST: Suzanne Jackson <span class="cite">[72]</span><br>WORK: What is Love <span class="cite">[72]</span><br>PROVENANCE: San Francisco Museum of Art <span class="cite">[73]</span>' },
-            '67': { data: 'ARTIST: Constantin Brancusi <span class="cite">[61]</span><br>WORK: Leda 1920 <span class="cite">[62]</span><br>MATERIAL: Marble <span class="cite">[64]</span><br>PROVENANCE: Bequest of Katherine S. Dreier <span class="cite">[65]</span>' },
-            '56': { data: 'ARTIST: Isamu Noguchi <span class="cite">[48]</span><br>WORK: Figure 1946 <span class="cite">[49]</span><br>MATERIAL: Georgia marble <span class="cite">[51]</span><br>PROVENANCE: Gift of Lannan Foundation <span class="cite">[54]</span>' },
-            '44': { data: 'ARTIST: Max Ernst <span class="cite">[38]</span><br>WORK: An Anxious Friend 1944 <span class="cite">[39]</span><br>MATERIAL: Bronze <span class="cite">[41]</span><br>PROVENANCE: Lindy and Edwin Bergman Collection <span class="cite">[42]</span>' },
-            '33': { data: 'ARTIST: Jean (Hans) Arp <span class="cite">[27]</span><br>WORK: Growth 1938/60 <span class="cite">[28]</span><br>MATERIAL: White marble <span class="cite">[30]</span><br>PROVENANCE: Grant J. Pick Purchase Fund <span class="cite">[31]</span>' },
-            '22': { data: 'ARTIST: Alberto Giacometti <span class="cite">[16]</span><br>WORK: Spoon Woman 1926 <span class="cite">[17]</span><br>MATERIAL: Bronze <span class="cite">[19]</span><br>PROVENANCE: Gift of Florence M. Schoenborn <span class="cite">[20]</span>' },
-            '11': { data: 'ARTIST: Marcel Duchamp <span class="cite">[5]</span><br>WORK: Hat Rack 1916 <span class="cite">[6]</span><br>MATERIAL: Wood <span class="cite">[8]</span><br>PROVENANCE: Mr and Mrs Carter H. Harrison <span class="cite">[9]</span>' },
-            '128': { data: 'ARTIST: Lygia Clark <span class="cite">[122]</span><br>WORK: Bicho, Caranguejo Duplo, 1961 <span class="cite">[123]</span><br>MATERIAL: Aluminium <span class="cite">[124]</span><br>PROVENANCE: Governo do State of São Paulo <span class="cite">[126]</span>' }
-        };
+ <script>
+        // This is the link to your live Google Sheet data
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTW-GwSF7XtNJpj4sGdbufA5OhAwb5j6q97J2ZoIq-OSyrNWoPKvdvyg6fcYKp54Z4UxY0B3bhA0IHw/pub?output=csv';
 
-        function openNode(id) {
-            const node = database[id];
-            if(node) {
-                document.getElementById('extraction-provenance').innerHTML = node.data;
-                document.getElementById('repository').style.display = 'block';
-                document.body.style.overflow = 'hidden';
+        async function loadChromaData() {
+            try {
+                const response = await fetch(sheetUrl);
+                const data = await response.text();
+                
+                // Splits the CSV into rows
+                const rows = data.split('\n').map(row => row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+                const tableBody = document.querySelector('tbody');
+                
+                // Clear the table so we can fill it with Google Sheet data
+                tableBody.innerHTML = ''; 
+
+                for (let i = 1; i < rows.length; i++) {
+                    const cols = rows[i];
+                    if (cols.length < 5) continue; 
+
+                    // Clean up data based on your Spreadsheet columns
+                    const [museum, url, location, date, time, artist, work, material, provenance, citeId] = cols.map(c => c.replace(/"/g, '').trim());
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><a href="${url}" class="museum-link" target="_blank">${museum}</a> <span class="cite">[${citeId}]</span></td>
+                        <td class="col-location">${location} <span class="cite">[${citeId}]</span></td>
+                        <td class="col-date">${date} <span class="cite">[${citeId}]</span></td>
+                        <td class="col-time">
+                            <span class="timestamp" onclick="openNode('${artist}', '${work}', '${material}', '${provenance}')">[ ${time} ]</span>
+                            <span class="cite">[${citeId}]</span>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                }
+            } catch (error) {
+                console.error("Connection to Chromastacks depository failed.", error);
             }
+        }
+
+        // This function handles the "Shadow Provenance" page (Layer 2)
+        function openNode(artist, work, material, provenance) {
+            const ledger = `
+                ARTIST: ${artist}<br>
+                WORK: ${work}<br>
+                MATERIAL: ${material}<br>
+                PROVENANCE: ${provenance}
+            `;
+            document.getElementById('extraction-provenance').innerHTML = ledger;
+            document.getElementById('repository').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         }
 
         function closeNode() {
             document.getElementById('repository').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
+
+        // Start the program
+        loadChromaData();
     </script>
 </body>
 </html>
