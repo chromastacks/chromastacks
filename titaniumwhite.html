@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TITANIUM WHITE | K.S. SYSTEM</title>
+    <style>
+        :root {
+            --system-font: 'Helvetica', Arial, sans-serif;
+            --bg-color: #ffffff;
+            --text-main: #000000;
+            --text-soft: #444444; 
+            --text-cite: #cccccc; 
+            --border-line: #eeeeee;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--system-font);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: normal; 
+        }
+
+        header {
+            width: 100%;
+            max-width: 1100px;
+            border-bottom: 2px solid #000;
+            margin-bottom: 40px;
+            padding-bottom: 10px;
+        }
+
+        .log-status { font-size: 10px; color: #666; margin-top: 5px; text-transform: lowercase; }
+
+        table { width: 100%; max-width: 1100px; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; padding: 10px; border-bottom: 1px solid #000; text-transform: uppercase; font-size: 11px; font-weight: normal; }
+        td { padding: 15px 10px; border-bottom: 1px solid var(--border-line); }
+
+        /* COLUMN SPACING */
+        .col-museum { width: 30%; }
+        .col-location { width: 25%; padding-right: 40px; }
+        .col-date { width: 20%; padding-right: 40px; }
+        .col-time { width: 25%; }
+
+        .museum-link { color: #000; text-decoration: underline; font-weight: normal; }
+
+        /* ACTIVE TIME TRIGGER */
+        .timestamp {
+            background: transparent;
+            color: var(--text-cite);
+            border: 1px solid var(--text-cite); 
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 11px;
+            display: inline-block;
+            pointer-events: auto; /* Ensures clickability */
+        }
+        .timestamp:hover { border-color: var(--text-soft); color: var(--text-soft); }
+
+        #repository {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #fff;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .extraction-view { max-width: 800px; margin: 40px auto; text-align: center; }
+        .provenance-ledger { font-size: 12px; text-align: left; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+        .cite { color: var(--text-cite); font-size: 10px; vertical-align: super; font-weight: normal; }
+
+        .close-protocol { 
+            display: block; 
+            margin: 40px auto; 
+            background: var(--text-cite); 
+            color: var(--text-soft); 
+            border: none; 
+            padding: 15px 30px; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="log-status">#system_trace: ongoing</div>
+    </header>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="col-museum">Museum</th>
+                <th class="col-location">Location</th>
+                <th class="col-date">Date</th>
+                <th class="col-time">Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="https://www.barcelona.cat/museu-etnologic-culturesmon/en" class="museum-link" target="_blank">Ethnographic museum</a> <span class="cite">[137]</span></td>
+                <td class="col-location">Barcelona, SP <span class="cite">[137]</span></td>
+                <td class="col-date">Dec 23, 2025 <span class="cite">[138]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('138')">[ 10:13 AM ]</span> <span class="cite">[138]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.moma.org" class="museum-link" target="_blank">Museum of Modern Art NYC</a> <span class="cite">[105]</span></td>
+                <td class="col-location">New York, USA <span class="cite">[105]</span></td>
+                <td class="col-date">Oct 21, 2025 <span class="cite">[106]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('106')">[ 1:45 PM ]</span> <span class="cite">[106]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.moma.org" class="museum-link" target="_blank">Museum of Modern Art NYC</a> <span class="cite">[94]</span></td>
+                <td class="col-location">New York, USA <span class="cite">[94]</span></td>
+                <td class="col-date">Oct 21, 2025 <span class="cite">[95]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('95')">[ 2:14 PM ]</span> <span class="cite">[95]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.moma.org" class="museum-link" target="_blank">Museum of Modern Art NYC</a> <span class="cite">[84]</span></td>
+                <td class="col-location">New York, USA <span class="cite">[84]</span></td>
+                <td class="col-date">Oct 21, 2025 <span class="cite">[85]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('85')">[ 2:12 PM ]</span> <span class="cite">[85]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.sfmoma.org" class="museum-link" target="_blank">SFMOMA</a> <span class="cite">[116]</span></td>
+                <td class="col-location">San Francisco, USA <span class="cite">[116]</span></td>
+                <td class="col-date">Oct 5, 2025 <span class="cite">[117]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('117')">[ 7:14 PM ]</span> <span class="cite">[117]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.sfmoma.org" class="museum-link" target="_blank">San Francisco Museum of Art</a> <span class="cite">[73]</span></td>
+                <td class="col-location">San Francisco, USA <span class="cite">[73]</span></td>
+                <td class="col-date">Oct 5, 2025 <span class="cite">[74]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('74')">[ 5:33 PM ]</span> <span class="cite">[74]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.artic.edu" class="museum-link" target="_blank">Art Institute Of Chicago</a> <span class="cite">[66]</span></td>
+                <td class="col-location">Chicago, USA <span class="cite">[66]</span></td>
+                <td class="col-date">July 11, 2025 <span class="cite">[67]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('67')">[ 1:50 PM ]</span> <span class="cite">[67]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.artic.edu" class="museum-link" target="_blank">Art Institute Of Chicago</a> <span class="cite">[55]</span></td>
+                <td class="col-location">Chicago, USA <span class="cite">[55]</span></td>
+                <td class="col-date">July 11, 2025 <span class="cite">[56]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('56')">[ 1:50 PM ]</span> <span class="cite">[56]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.artic.edu" class="museum-link" target="_blank">Art Institute Of Chicago</a> <span class="cite">[43]</span></td>
+                <td class="col-location">Chicago, USA <span class="cite">[43]</span></td>
+                <td class="col-date">July 11, 2025 <span class="cite">[44]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('44')">[ 1:48 PM ]</span> <span class="cite">[44]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.artic.edu" class="museum-link" target="_blank">Art Institute Of Chicago</a> <span class="cite">[32]</span></td>
+                <td class="col-location">Chicago, USA <span class="cite">[32]</span></td>
+                <td class="col-date">July 11, 2025 <span class="cite">[33]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('33')">[ 1:45 PM ]</span> <span class="cite">[33]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.artic.edu" class="museum-link" target="_blank">Art Institute Of Chicago</a> <span class="cite">[21]</span></td>
+                <td class="col-location">Chicago, USA <span class="cite">[21]</span></td>
+                <td class="col-date">July 11, 2025 <span class="cite">[22]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('22')">[ 1:27 PM ]</span> <span class="cite">[22]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://www.artic.edu" class="museum-link" target="_blank">Art Institute Of Chicago</a> <span class="cite">[10]</span></td>
+                <td class="col-location">Chicago, USA <span class="cite">[10]</span></td>
+                <td class="col-date">July 11, 2025 <span class="cite">[11]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('11')">[ 1:21 PM ]</span> <span class="cite">[11]</span></td>
+            </tr>
+            <tr>
+                <td><a href="https://pinacoteca.org.br" class="museum-link" target="_blank">Pinacoteca de São Paulo</a> <span class="cite">[127]</span></td>
+                <td class="col-location">São Paulo, BR <span class="cite">[127]</span></td>
+                <td class="col-date">June 3, 2024 <span class="cite">[128]</span></td>
+                <td class="col-time"><span class="timestamp" onclick="openNode('128')">[ 1:53 PM ]</span> <span class="cite">[128]</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="repository">
+        <div class="extraction-view">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px;">SHADOW PROVENANCE</div>
+            <div id="extraction-provenance" class="provenance-ledger"></div>
+            <button class="close-protocol" onclick="closeNode()">CLOSE_PROTOCOL</button>
+        </div>
+    </div>
+
+    <script>
+        const database = {
+            '138': { data: 'ARTIST: Inyai-ewa <span class="cite">[134]</span><br>WORK: Aripa, figura antropomorfa <span class="cite">[133]</span><br>MATERIAL: Fusta tallada amb incisions <span class="cite">[135]</span><br>PROVENANCE: MEB CF 5258. Collecció Folch <span class="cite">[136]</span>' },
+            '106': { data: 'ARTIST: Ruth Asawa <span class="cite">[100]</span><br>WORK: Untitled S.393 <span class="cite">[101]</span><br>MATERIAL: Steel wire <span class="cite">[103]</span><br>PROVENANCE: Private collection <span class="cite">[104]</span>' },
+            '95': { data: 'ARTIST: Edward Krasiński <span class="cite">[90]</span><br>WORK: Untitled 1965 <span class="cite">[91]</span><br>MATERIAL: Painted wood and metal wire <span class="cite">[92]</span><br>PROVENANCE: Gift of Jo Carole and Ronald S. Lauder, 2015 <span class="cite">[93]</span>' },
+            '85': { data: 'ARTIST: Marcel Duchamp <span class="cite">[79]</span><br>WORK: In Advance of the broken Arm 1964 <span class="cite">[80]</span><br>MATERIAL: Wood and galvanized-iron snow shovel <span class="cite">[82]</span><br>PROVENANCE: Gift of The Jerry and Emily Spiegel Family Foundation, 2005 <span class="cite">[83]</span>' },
+            '117': { data: 'ARTIST: Alexander Calder <span class="cite">[111]</span><br>WORK: 23 Spreading Leaves 1945 <span class="cite">[112]</span><br>MATERIAL: Metal and paint <span class="cite">[113]</span><br>PROVENANCE: Fisher family 2001 <span class="cite">[115]</span>' },
+            '74': { data: 'ARTIST: Suzanne Jackson <span class="cite">[72]</span><br>WORK: What is Love <span class="cite">[72]</span><br>PROVENANCE: San Francisco Museum of Art <span class="cite">[73]</span>' },
+            '67': { data: 'ARTIST: Constantin Brancusi <span class="cite">[61]</span><br>WORK: Leda 1920 <span class="cite">[62]</span><br>MATERIAL: Marble <span class="cite">[64]</span><br>PROVENANCE: Bequest of Katherine S. Dreier <span class="cite">[65]</span>' },
+            '56': { data: 'ARTIST: Isamu Noguchi <span class="cite">[48]</span><br>WORK: Figure 1946 <span class="cite">[49]</span><br>MATERIAL: Georgia marble <span class="cite">[51]</span><br>PROVENANCE: Gift of Lannan Foundation <span class="cite">[54]</span>' },
+            '44': { data: 'ARTIST: Max Ernst <span class="cite">[38]</span><br>WORK: An Anxious Friend 1944 <span class="cite">[39]</span><br>MATERIAL: Bronze <span class="cite">[41]</span><br>PROVENANCE: Lindy and Edwin Bergman Collection <span class="cite">[42]</span>' },
+            '33': { data: 'ARTIST: Jean (Hans) Arp <span class="cite">[27]</span><br>WORK: Growth 1938/60 <span class="cite">[28]</span><br>MATERIAL: White marble <span class="cite">[30]</span><br>PROVENANCE: Grant J. Pick Purchase Fund <span class="cite">[31]</span>' },
+            '22': { data: 'ARTIST: Alberto Giacometti <span class="cite">[16]</span><br>WORK: Spoon Woman 1926 <span class="cite">[17]</span><br>MATERIAL: Bronze <span class="cite">[19]</span><br>PROVENANCE: Gift of Florence M. Schoenborn <span class="cite">[20]</span>' },
+            '11': { data: 'ARTIST: Marcel Duchamp <span class="cite">[5]</span><br>WORK: Hat Rack 1916 <span class="cite">[6]</span><br>MATERIAL: Wood <span class="cite">[8]</span><br>PROVENANCE: Mr and Mrs Carter H. Harrison <span class="cite">[9]</span>' },
+            '128': { data: 'ARTIST: Lygia Clark <span class="cite">[122]</span><br>WORK: Bicho, Caranguejo Duplo, 1961 <span class="cite">[123]</span><br>MATERIAL: Aluminium <span class="cite">[124]</span><br>PROVENANCE: Governo do State of São Paulo <span class="cite">[126]</span>' }
+        };
+
+        function openNode(id) {
+            const node = database[id];
+            if(node) {
+                document.getElementById('extraction-provenance').innerHTML = node.data;
+                document.getElementById('repository').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeNode() {
+            document.getElementById('repository').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
