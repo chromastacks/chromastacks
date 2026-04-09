@@ -3,153 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLUE | WRAPPINGS CONFIGURATOR</title>
+    <title>WRAPPINGS | BLUE MONOCHROMES</title>
     <style>
-        :root {
-            --bg-blue: #d6ebff; 
-            --action-blue: #0047ab; 
-            --text-main: #000;
+        body { 
+            background-color: #f0f8ff; 
+            color: #000; 
+            font-family: 'Courier New', Courier, monospace; 
+            margin: 0; 
+            padding: 60px 20px; 
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        body { background-color: var(--bg-blue); font-family: 'Helvetica', Arial, sans-serif; margin: 0; padding: 40px; color: var(--text-main); }
-        
-        .manifesto-trace { max-width: 700px; margin: 0 auto 50px; font-size: 14px; line-height: 1.6; border-left: 1px solid #000; padding-left: 20px; }
-        .configurator { max-width: 950px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; align-items: flex-start; }
-        
-        #controls { flex: 1; min-width: 320px; }
-        .step-box { background: rgba(255,255,255,0.6); padding: 20px; border: 1px solid #000; margin-bottom: 15px; }
-        
-        .swatch-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
-        .swatch { width: 35px; height: 18px; border: 1px solid #000; cursor: pointer; transition: transform 0.1s; }
-        .swatch:hover { transform: scale(1.1); border-color: #fff; }
 
-        #preview-frame { flex: 1; min-width: 350px; text-align: center; position: sticky; top: 20px; }
-        #preview-canvas { width: 350px; height: 350px; background: #fff; position: relative; border: 1px solid #000; margin: 0 auto; overflow: hidden; }
+        .manifesto-section { max-width: 800px; text-align: left; margin-bottom: 60px; font-size: 14px; }
+        .configurator-container { display: flex; flex-wrap: wrap; gap: 60px; justify-content: center; align-items: flex-start; max-width: 1100px; width: 100%; }
+
+        #preview-canvas { width: 450px; height: 450px; background: #fff; position: relative; border: 1px solid #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #base-container { position: relative; width: 100%; height: 100%; transition: all 0.5s ease; }
+        .wrap-unit { position: absolute; transition: all 0.5s ease; }
+
+        #v1 { inset: 0; z-index: 1; } 
+        #v2 { bottom: 0; left: 0; width: 100%; z-index: 10; border-top: 1px solid rgba(255,255,255,0.4); }
+        #v3 { bottom: 35%; left: 15%; width: 70%; height: 50%; z-index: 2; display: none; overflow: hidden; }
+        #v3-fold { position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; background: inherit; border-top: 1px solid rgba(255,255,255,0.3); z-index: 5; display: none; }
+        #v4 { bottom: 25%; left: 25%; width: 50%; height: 50%; z-index: 3; display: none; border: 1px solid rgba(255,255,255,0.2); }
+
+        .controls-column { flex: 1; min-width: 320px; max-width: 400px; }
+        .step-box { border: 1px solid #000; padding: 20px; margin-bottom: 15px; background: rgba(255,255,255,0.5); }
+        .swatch-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+        .swatch { width: 32px; height: 18px; border: 1px solid #000; cursor: pointer; }
+        select { background: transparent; border: none; border-bottom: 1px solid #000; font-family: inherit; font-size: 13px; width: 100%; margin-top: 5px; outline: none; }
+
+        .blue-btn { background: #00008b; color: #fff; border: none; padding: 18px; width: 100%; cursor: pointer; font-family: inherit; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
         
-        /* Full-Width Pocket Logic */
-        .layer { position: absolute; bottom: 0; left: 0; width: 100%; transition: all 0.5s ease; }
-        #view-layer1 { height: 100%; z-index: 1; }
-        #view-layer2 { height: 60%; z-index: 2; display: none; border-top: 1px solid rgba(255,255,255,0.2); }
-        #view-layer3 { height: 30%; z-index: 3; display: none; border-top: 1px solid rgba(255,255,255,0.2); }
+        #order-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(240, 248, 255, 0.98); z-index: 100; justify-content: center; align-items: center; 
+        }
+        #summary-trace { 
+            background: #fff; border: 1px solid #000; padding: 40px; width: 480px; text-align: left;
+        }
 
-        .blue-btn { background-color: var(--action-blue); color: white; border: none; padding: 12px 24px; cursor: pointer; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; margin-bottom: 15px; width: 100%; }
-        .blue-btn:hover { background-color: #003380; }
-        .execute-btn { padding: 20px; font-size: 14px; margin-top: 10px; }
-
-        .zelle-protocol { margin-top: 60px; text-align: center; font-size: 11px; text-transform: uppercase; border-top: 1px solid #000; padding-top: 30px; line-height: 2; }
-        input[type="text"] { border:none; border-bottom:1px solid #000; background:transparent; outline:none; width: 250px; padding: 5px; font-family: monospace; }
+        .footer-protocol { max-width: 800px; width: 100%; margin-top: 80px; font-size: 12px; border-top: 1px solid #000; padding-top: 30px; }
     </style>
 </head>
 <body>
 
-    <div class="manifesto-trace">
-        <strong>WRAPPINGS (blue monochromes)</strong><br><br>
-        This series emerged during the height of COVID. I created paintings of varying sizes with pockets that I inserted into one another. Creating a space for another became the only possible act. We were all confined to our homes, contained by something greater than ourselves.<br><br>
-        <em>Wrapping is a customizable, on-demand digital painting system. Once selected, I will paint it according to the selection offering chart.</em>
+    <div class="manifesto-section">
+        <strong>WRAPPINGS (Blue monochromes)</strong><br><br>
+        This series emerged at the height of COVID. I created paintings of varying sizes with pockets that inserted into one another. Creating a space for another became the only possible act. We were all confined to our homes, contained by something greater than ourselves.<br><br>
+        Wrapping is a customizable, on-demand digital painting system.
     </div>
 
-    <div class="configurator">
-        <div id="controls">
-            <div class="step-box" id="step1">
-                <strong>01_BASE_WRAP (SQUARE)</strong>
-                <p>SIZE: <select id="size1" onchange="updateCanvasSize()"><option value="350">30 x 30</option><option value="250">20 x 20</option><option value="200">18 x 18</option><option value="150">16 x 16</option></select></p>
-                <div class="swatch-grid" id="grid1"></div>
+    <div class="configurator-container">
+        <div class="controls-column">
+            <div class="step-box">
+                FIRST WRAPPING
+                <p>SIZE: <select id="size1" onchange="updateSystem()"><option value="100">36 x 36</option><option value="83">30 x 30</option></select></p>
+                <div class="swatch-grid" id="g1"></div>
             </div>
-
-            <button class="blue-btn" id="btn-add2" onclick="showStep(2)">+ ADD SECOND WRAP (POCKET)</button>
-            <div class="step-box" id="step2" style="display:none;">
-                <strong>02_NESTED_WRAP (POCKET)</strong>
-                <p>SIZE: <select id="size2"><option>16 x 30</option><option>15 x 30</option><option>13 x 30</option><option>12 x 30</option></select></p>
-                <div class="swatch-grid" id="grid2"></div>
-                <button class="blue-btn" id="btn-add3" onclick="showStep(3)" style="margin-top:10px;">+ ADD THIRD WRAP</button>
+            <div class="step-box">
+                SECOND WRAPPING
+                <p>HEIGHT OF FOLD: <select id="size2" onchange="updateSystem()"><option value="42">15 x 30</option><option value="44">16 x 30</option><option value="50">18 x 30</option></select></p>
+                <div class="swatch-grid" id="g2"></div>
             </div>
-
-            <div class="step-box" id="step3" style="display:none;">
-                <strong>03_FINAL_WRAP</strong>
-                <div class="swatch-grid" id="grid3"></div>
+            <div class="step-box">
+                THIRD WRAPPING
+                <p>TYPE: <select id="wrap-type" onchange="updateSystem()"><option value="none">NONE</option><option value="single">SINGLE WRAP</option><option value="double">DOUBLE WRAP (FOLDED)</option></select></p>
+                <div class="swatch-grid" id="g3"></div>
             </div>
-
-            <button class="blue-btn execute-btn" onclick="executeDemand()">EXECUTE_DEMAND_PROTOCOL</button>
+            <div id="step4" class="step-box" style="display:none;">
+                CHOOSE COLOR TO BE WRAPPED
+                <p>SIZE: <select id="size4" onchange="updateSystem()"><option value="50">10 x 10</option><option value="40">8 x 8</option></select></p>
+                <div class="swatch-grid" id="grid4"></div>
+            </div>
+            <button class="blue-btn" onclick="executeDemand()">EXECUTE_DEMAND_PROTOCOL</button>
         </div>
 
-        <div id="preview-frame">
-            <div id="preview-canvas">
-                <div id="view-layer1" class="layer"></div>
-                <div id="view-layer2" class="layer"></div>
-                <div id="view-layer3" class="layer"></div>
+        <div id="preview-canvas">
+            <div id="base-container">
+                <div id="v1" class="wrap-unit"></div>
+                <div id="v3" class="wrap-unit"><div id="v4" class="wrap-unit"></div><div id="v3-fold"></div></div>
+                <div id="v2" class="wrap-unit"></div>
             </div>
-            <p style="font-size:10px; margin-top:15px; letter-spacing:1px;">LIVE_CHROMATIC_RESONANCE_PREVIEW</p>
         </div>
     </div>
 
-    <div class="zelle-protocol">
-        <div style="margin-bottom: 25px;">
-            SIGN_INVOICE_REQUEST (TYPE NAME): <input type="text" id="buyer-signature" placeholder="_______________________">
+    <div id="order-overlay">
+        <div style="text-align:center;">
+            <div id="summary-trace">
+                <p id="summary-header" style="font-weight:bold;"></p>
+                <div id="summary-thumbnail" style="width:200px; height:200px; border:1px solid #000; margin: 20px 0; position:relative; overflow:hidden;"></div>
+                <div id="summary-details" style="font-size:12px;"></div>
+                <p style="font-size:10px; margin-top:20px;">EMAIL TO: chromastacks@gmail.com FOR PRICE INQUIRY.</p>
+            </div>
+            <button class="blue-btn" style="width:100%; font-size: 9px;" onclick="closeOverlay()">
+                PLEASE SCREENSHOT THIS ORDER AND ATTACH TO YOUR EMAIL INQUIRY
+            </button>
         </div>
-        PAYMENT: ZELLE | MAILING COSTS PAID BY BUYER | SIGNED CERTIFICATE INCLUDED
-        <br>#K.ari.n Schneider © karinschneider.com
+    </div>
+
+    <div class="footer-protocol">
+        Once you select your Wrap, email your choice for price inquiry to <strong>chromastacks@gmail.com</strong>. Shipping costs are the buyer's responsibility.<br><br>
+        <strong>The Certificate of Authenticity:</strong> The work will be photographed and mailed to the buyer. Each Wrap is numbered.
     </div>
 
     <script>
-        const blues = [
-            { name: "Ultramarine Blue", hex: "#003399", code: "7400" },
-            { name: "Cobalt Blue", hex: "#0047ab", code: "7140" },
-            { name: "Cerulean Blue", hex: "#2a52be", code: "7050" },
-            { name: "Prussian Blue Hue", hex: "#003153", code: "7460" },
-            { name: "Anthraquinone Blue", hex: "#0a1128", code: "7005" },
-            { name: "Phthalo Blue (RS)", hex: "#000f89", code: "7260" },
-            { name: "Phthalo Blue (GS)", hex: "#00416a", code: "7255" },
-            { name: "Light Phthalo Blue", hex: "#add8e6", code: "7577" },
-            { name: "Manganese Blue Hue", hex: "#008080", code: "7457" },
-            { name: "Teal", hex: "#008081", code: "7369" },
-            { name: "Cobalt Teal", hex: "#7fdbff", code: "7145" },
-            { name: "Cobalt Turquoise", hex: "#00ced1", code: "7144" }
+        const goldenBlues = [
+            {n: "Ultramarine Blue", h: "#003399"}, {n: "Light Ultramarine Blue", h: "#83a0d1"},
+            {n: "Cobalt Blue", h: "#0047ab"}, {n: "Cerulean Blue, Chromium", h: "#2a52be"},
+            {n: "Anthraquinone Blue", h: "#0a1128"}, {n: "Prussian Blue Hue", h: "#003153"},
+            {n: "Phthalo Blue (RS)", h: "#000f89"}, {n: "Phthalo Blue (GS)", h: "#00416a"},
+            {n: "Light Phthalo Blue", h: "#add8e6"}, {n: "Manganese Blue Hue", h: "#008080"}
         ];
 
-        let selections = { l1: blues[0], l2: blues[0], l3: blues[0] };
+        let selections = { 1: goldenBlues[0].n, 2: "15x30", 3: "None", 4: "None" };
 
-        function populateSwatches() {
-            for (let i = 1; i <= 3; i++) {
-                const grid = document.getElementById(`grid${i}`);
-                blues.forEach(color => {
-                    const swatch = document.createElement('div');
-                    swatch.className = 'swatch';
-                    swatch.style.backgroundColor = color.hex;
-                    swatch.onclick = function() {
-                        document.getElementById(`view-layer${i}`).style.backgroundColor = color.hex;
-                        selections[`l${i}`] = color;
+        function init() {
+            [1, 2, 3, 4].forEach(i => {
+                const grid = document.getElementById(i === 4 ? 'grid4' : `g${i}`);
+                goldenBlues.forEach(c => {
+                    const s = document.createElement('div');
+                    s.className = 'swatch'; s.style.backgroundColor = c.h;
+                    s.onclick = () => { 
+                        const view = document.getElementById(`v${i}`);
+                        view.style.display = 'block';
+                        view.style.backgroundColor = c.h;
+                        selections[i] = c.n;
+                        if(i === 3) { document.getElementById('v3-fold').style.backgroundColor = c.h; updateSystem(); }
                     };
-                    grid.appendChild(swatch);
+                    grid.appendChild(s);
                 });
+            });
+            document.getElementById('v1').style.backgroundColor = goldenBlues[0].h;
+            updateSystem();
+        }
+
+        function updateSystem() {
+            const s1 = document.getElementById('size1').value;
+            const s2 = document.getElementById('size2').value;
+            const type = document.getElementById('wrap-type').value;
+            const s4 = document.getElementById('size4').value;
+            document.getElementById('base-container').style.width = s1 + '%';
+            document.getElementById('base-container').style.height = s1 + '%';
+            document.getElementById('v2').style.height = s2 + '%';
+            
+            const v3 = document.getElementById('v3'), v4 = document.getElementById('v4'), step4 = document.getElementById('step4'), v3fold = document.getElementById('v3-fold');
+            if(type === 'none') { v3.style.display = 'none'; v4.style.display = 'none'; step4.style.display = 'none'; selections[3] = "None"; } 
+            else {
+                v3.style.display = 'block';
+                const isDouble = (type === 'double');
+                step4.style.display = isDouble ? 'block' : 'none';
+                v4.style.display = isDouble ? 'block' : 'none';
+                v3fold.style.display = isDouble ? 'block' : 'none';
+                v4.style.width = s4 + '%'; v4.style.height = s4 + '%';
+                selections[3] = isDouble ? "Double Wrap" : "Single Wrap";
             }
-        }
-
-        function showStep(num) {
-            document.getElementById(`step${num}`).style.display = 'block';
-            document.getElementById(`view-layer${num}`).style.display = 'block';
-            document.getElementById(`view-layer${num}`).style.backgroundColor = blues[0].hex;
-            if (num === 2) document.getElementById('btn-add2').style.display = 'none';
-            if (num === 3) document.getElementById('btn-add3').style.display = 'none';
-        }
-
-        function updateCanvasSize() {
-            const size = document.getElementById('size1').value;
-            const canvas = document.getElementById('preview-canvas');
-            canvas.style.width = size + 'px';
-            canvas.style.height = size + 'px';
         }
 
         function executeDemand() {
-            const sig = document.getElementById('buyer-signature').value;
-            if (!sig) {
-                alert("PROTOCOL_ERROR: Signature required.");
-                return;
-            }
-            const summary = `INVOICE_REQUEST: WRAPPINGS\nSIGNATURE: ${sig}\nBASE: ${selections.l1.name}\nWRAP_2: ${document.getElementById('view-layer2').style.display === 'block' ? selections.l2.name : 'NONE'}\nWRAP_3: ${document.getElementById('view-layer3').style.display === 'block' ? selections.l3.name : 'NONE'}\n\nPROTOCOL: Pay via Zelle. Mailing costs paid by buyer. Work + Certificate mailed.`;
-            alert(summary);
+            const orderNum = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('summary-header').innerText = `SYSTEM_CARE SUMMARY #WRAP-${orderNum}`;
+            document.getElementById('summary-details').innerHTML = `
+                WRAP 1: ${selections[1]} (${document.getElementById('size1').options[document.getElementById('size1').selectedIndex].text})<br>
+                WRAP 2: ${selections[2]} Fold<br>
+                WRAP 3: ${selections[3]}<br>
+                ${selections[4] !== "None" && selections[4] !== null ? 'NUCLEUS: ' + selections[4] : ''}
+            `;
+            const canvasClone = document.getElementById('base-container').cloneNode(true);
+            const thumbContainer = document.getElementById('summary-thumbnail');
+            thumbContainer.innerHTML = "";
+            thumbContainer.appendChild(canvasClone);
+            document.getElementById('order-overlay').style.display = 'flex';
         }
 
-        populateSwatches();
-        document.getElementById('view-layer1').style.backgroundColor = blues[0].hex;
+        function closeOverlay() {
+            document.getElementById('order-overlay').style.display = 'none';
+        }
+
+        init();
     </script>
 </body>
 </html>
