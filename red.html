@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sovereign Node: RED</title>
+    <style>
+        /* Sovereign Font Stack (System Defaults - No External Branding) */
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; background-color: #000; 
+        }
+        
+        #membrane {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #990000; 
+            animation: breathe 20s ease-in-out infinite; 
+            z-index: 1;
+            transition: background-color 0.05s ease;
+            cursor: crosshair;
+        }
+
+        /* Percussive Shift: High-Chroma Red Strike */
+        .percussive-flash { background-color: #ff0000 !important; }
+
+        .sonorous-word {
+            position: absolute; 
+            z-index: 5; 
+            pointer-events: none;
+            text-transform: uppercase; 
+            white-space: nowrap;
+            /* Neon Glow Logic */
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.4);
+            animation: drift-dissolve 5s ease-out forwards;
+        }
+
+        #hud {
+            position: absolute; top: 40px; left: 40px;
+            /* Neon Red HUD */
+            color: #ff1a1a; 
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.6);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px; letter-spacing: 2px; z-index: 30; line-height: 1.8; white-space: pre;
+            pointer-events: none;
+        }
+
+        #hud a { 
+            pointer-events: auto; 
+            color: #ff4d4d; 
+            text-decoration: none; 
+            border-bottom: 1px solid rgba(255, 0, 0, 0.5); 
+            cursor: pointer; 
+        }
+
+        /* Deep Status Tone */
+        #mic-status { color: #800000; font-weight: bold; }
+
+        @keyframes drift-dissolve {
+            0% { opacity: 0; transform: translateY(40px) scale(0.6); }
+            20% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-200px) scale(2.5); }
+        }
+
+        @keyframes breathe { 
+            0% { background-color: #500000; } 
+            50% { background-color: #990000; } 
+            100% { background-color: #500000; } 
+        }
+    </style>
+</head>
+<body onclick="activateCircuit()">
+    <div id="membrane"></div>
+
+    <div id="hud">[SIGNAL]: RED MONOCHROME / 2009 - ONGOING
+[ONLINE CIRCUIT]: <a href="https://www.youtube.com/@k.ari.n" target="_blank">YOUTUBE/@K.ARI.N</a>
+[TEMPORAL_MARK]: 2009 - 2026
+[STATUS]: <span id="mic-status">CLICK TO ACTIVATE NEON PERCUSSION</span> <a onclick="activateCircuit()">[MIC]</a>
+[MONOCHROME SUGGESTIONS]: chromastack@gmail.com</div>
+
+    <script>
+        let recognition;
+        let lastWord = "";
+        // Purged Barcode: Only System Monospace and Serif variants for voices
+        const typefaces = [
+            "'Courier New', Courier, monospace", 
+            "Georgia, serif", 
+            "'Times New Roman', Times, serif", 
+            "Arial, Helvetica, sans-serif", 
+            "Impact, Charcoal, sans-serif"
+        ];
+
+        function activateCircuit() {
+            if (recognition) return;
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                document.getElementById('mic-status').innerText = "NEON_CIRCUIT_LIVE";
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[event.results.length - 1][0].transcript.trim();
+                const words = transcript.split(/\s+/);
+                const newest = words[words.length - 1].toLowerCase();
+                
+                if (newest !== lastWord) {
+                    lastWord = newest;
+                    manifestWord(newest);
+                }
+            };
+
+            // Audio Analysis for Clapping
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioCtx.createMediaStreamSource(stream);
+                const processor = audioCtx.createScriptProcessor(2048, 1, 1);
+                source.connect(processor);
+                processor.connect(audioCtx.destination);
+                processor.onaudioprocess = (e) => {
+                    const input = e.inputBuffer.getChannelData(0);
+                    let peak = 0;
+                    for (let i = 0; i < input.length; i++) {
+                        if (Math.abs(input[i]) > peak) peak = Math.abs(input[i]);
+                    }
+                    if (peak > 0.45) triggerPulse();
+                };
+            });
+
+            recognition.onend = () => { if (recognition) recognition.start(); };
+            recognition.start();
+        }
+
+        function triggerPulse() {
+            const m = document.getElementById('membrane');
+            m.classList.add('percussive-flash');
+            setTimeout(() => m.classList.remove('percussive-flash'), 80);
+        }
+
+        function manifestWord(word) {
+            if (!word) return;
+            const el = document.createElement('div');
+            el.className = 'sonorous-word';
+            el.innerText = word;
+
+            el.style.fontFamily = typefaces[Math.floor(Math.random() * typefaces.length)];
+            el.style.fontSize = (Math.floor(Math.random() * 160) + 15) + "px";
+            
+            // Neon Red Spectrum
+            const r = Math.floor(Math.random() * 55) + 200; 
+            el.style.color = `rgb(${r}, 0, 0)`;
+            
+            el.style.left = (Math.random() * 80 + 10) + "%";
+            el.style.top = (Math.random() * 80 + 10) + "%";
+            el.style.letterSpacing = (Math.random() * 25 - 5) + "px";
+
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 5000);
+        }
+    </script>
+</body>
+</html>
