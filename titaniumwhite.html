@@ -197,46 +197,43 @@
     </div>
 
  <script>
-        // This is the link to your live Google Sheet data
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTW-GwSF7XtNJpj4sGdbufA5OhAwb5j6q97J2ZoIq-OSyrNWoPKvdvyg6fcYKp54Z4UxY0B3bhA0IHw/pub?output=csv';
 
         async function loadChromaData() {
             try {
                 const response = await fetch(sheetUrl);
                 const data = await response.text();
-                
-                // Splits the CSV into rows
                 const rows = data.split('\n').map(row => row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
                 const tableBody = document.querySelector('tbody');
                 
-                // Clear the table so we can fill it with Google Sheet data
-                tableBody.innerHTML = ''; 
-
+                // This version APPENDS data instead of erasing, so your manual rows stay
                 for (let i = 1; i < rows.length; i++) {
                     const cols = rows[i];
                     if (cols.length < 5) continue; 
 
-                    // Clean up data based on your Spreadsheet columns
                     const [museum, url, location, date, time, artist, work, material, provenance, citeId] = cols.map(c => c.replace(/"/g, '').trim());
 
                     const tr = document.createElement('tr');
-tr.innerHTML = `
+                    tr.innerHTML = `
                         <td><a href="${url}" class="museum-link" target="_blank" rel="noopener noreferrer">${museum}</a> <span class="cite">[${citeId}]</span></td>
                         <td class="col-location">${location} <span class="cite">[${citeId}]</span></td>
                         <td class="col-date">${date} <span class="cite">[${citeId}]</span></td>
                         <td class="col-time">
-                            <span class="timestamp" onpointerup="openNode('${artist}', '${work}', '${material}', '${provenance}')" style="border:none; background:none; cursor:pointer; -webkit-tap-highlight-color:transparent;">[ ${time} ]</span>
+                            <span class="timestamp" 
+                                  onpointerup="openNode('${artist}', '${work}', '${material}', '${provenance}')" 
+                                  style="border:none; background:none; cursor:pointer; -webkit-tap-highlight-color:transparent; display:inline-block; padding:10px 0;">
+                                  [ ${time} ]
+                            </span>
                             <span class="cite">[${citeId}]</span>
                         </td>
                     `;
                     tableBody.appendChild(tr);
                 }
             } catch (error) {
-                console.error("Connection to Chromastacks depository failed.", error);
+                console.error("Connection failed.", error);
             }
         }
 
-        // This function handles the "Shadow Provenance" page (Layer 2)
         function openNode(artist, work, material, provenance) {
             const ledger = `
                 ARTIST: ${artist}<br>
@@ -253,6 +250,9 @@ tr.innerHTML = `
             document.getElementById('repository').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
+
+        loadChromaData();
+    </script>
 
         // Start the program
         loadChromaData();
