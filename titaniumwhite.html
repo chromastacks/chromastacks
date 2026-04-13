@@ -92,11 +92,8 @@
 </head>
 <body>
 
-    <header>
-        <div class="log-status">#system_trace: ongoing</div>
-    </header>
-    <header style="display: flex; justify-content: space-between; align-items: baseline;">
-        <div class="log-status">#system_trace: ongoing</div>
+ <header style="display: flex; justify-content: space-between; align-items: baseline; width: 100%; max-width: 1100px; border-bottom: 2px solid #000; margin-bottom: 40px; padding-bottom: 10px;">
+        <div class="log-status" style="font-size: 10px; color: #666; text-transform: lowercase;">#system_trace: ongoing</div>
         <a href="index.html" style="text-decoration: none; color: #000; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">chromastack.com</a>
     </header>
 
@@ -223,12 +220,12 @@
                     const [museum, url, location, date, time, artist, work, material, provenance, citeId] = cols.map(c => c.replace(/"/g, '').trim());
 
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><a href="${url}" class="museum-link" target="_blank">${museum}</a> <span class="cite">[${citeId}]</span></td>
+tr.innerHTML = `
+                        <td><a href="${url}" class="museum-link" target="_blank" rel="noopener noreferrer">${museum}</a> <span class="cite">[${citeId}]</span></td>
                         <td class="col-location">${location} <span class="cite">[${citeId}]</span></td>
                         <td class="col-date">${date} <span class="cite">[${citeId}]</span></td>
                         <td class="col-time">
-                            <span class="timestamp" onpointerup="openNode('${artist}', '${work}', '${material}', '${provenance}')">[ ${time} ]</span>
+                            <span class="timestamp" onpointerup="openNode('${artist}', '${work}', '${material}', '${provenance}')" style="border:none; background:none; cursor:pointer; -webkit-tap-highlight-color:transparent;">[ ${time} ]</span>
                             <span class="cite">[${citeId}]</span>
                         </td>
                     `;
