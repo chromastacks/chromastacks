@@ -227,7 +227,7 @@
                             <span class="cite">[${citeId}]</span>
                         </td>
                     `;
-                    tableBody.appendChild(tr);
+                    tableBody.prepend(tr);
                 }
             } catch (error) {
                 console.error("Connection failed.", error);
