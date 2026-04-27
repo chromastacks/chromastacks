@@ -5,67 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChromaStack | Black Monochrome</title>
     <style>
-        :root { --bg: #000000; --text: #ffffff; --accent: #555555; }
-
-        body { 
-            margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background-color: var(--bg); color: var(--text);
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            overflow: hidden; 
-        }
-
-        .orbit-container { position: absolute; width: 100vw; height: 100vh; pointer-events: none; }
-
-        .letter {
-            position: absolute; color: var(--accent);
-            font-size: 24px; cursor: pointer; pointer-events: auto;
-            transition: color 0.2s;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .letter:hover { color: var(--text); }
-
-        #flash-container {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.1s ease-in-out;
-            background: #000;
-        }
-        #flash-container.active { opacity: 1; }
-
-        .content-img {
-            max-width: 80vw;
-            max-height: 80vh;
-            object-fit: contain;
-            display: block;
+    /* ... (keep your existing styles for #orbit, etc.) ... */
     
-            /* Optimized X-Ray Filter Chain */
-            filter: brightness(1.2) contrast(1.8) grayscale(1);
+    #flash-container {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.1s ease-in-out;
+        background: #000; /* Clinical black background */
+    }
     
-            /* GPU Acceleration for speed */
-            will-change: filter;
-            transform: translateZ(0);
+    #flash-container.active { opacity: 1; }
+
+    .content-img {
+        max-width: 80vw;
+        max-height: 80vh;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
+        
+        /* REMOVED ALL FILTERS: The images must be processed locally 
+           to look like your desired X-ray output before upload. */
+        filter: none;
+        
+        /* GPU optimization for instant display */
+        will-change: transform;
+        transform: translateZ(0);
+        
+        /* Clinical, subtle edge lighting */
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
     
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-         }
-
-        footer {
-            position: absolute; bottom: 40px; width: 100%; text-align: center;
-            font-size: 11px; color: var(--accent); letter-spacing: 0.5px;
-        }
-
-        @keyframes orbit {
-            from { transform: rotate(0deg) translateX(40vw) rotate(0deg); }
-            to { transform: rotate(360deg) translateX(40vw) rotate(-360deg); }
-        }
-    </style>
+    /* ... (rest of your CSS) ... */
+</style>
 </head>
 <body>
 
