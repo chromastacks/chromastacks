@@ -41,10 +41,14 @@
         #flash-container.active { opacity: 1; }
 
         .content-img {
-            max-width: 80vw; max-height: 80vh;
+            max-width: 80vw; 
+            max-height: 80vh;
             object-fit: contain;
-            filter: invert(1);
-            display: block;
+           /* REMOVE invert(1) - it is making your negatives white blobs */
+           /* Add contrast and brightness to mimic an X-ray light box */
+           filter: brightness(1.2) contrast(1.4) grayscale(1);
+           display: block;
+           box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); /* Adds a light-box glow */
         }
 
         footer {
