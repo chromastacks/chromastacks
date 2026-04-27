@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChromaStack | Black Monochrome</title>
+    <style>
+        :root { --bg: #000000; --text: #ffffff; --accent: #555555; }
+
+        body { 
+            margin: 0; padding: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg); color: var(--text);
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            overflow: hidden; 
+        }
+
+        .orbit-container { position: absolute; width: 100vw; height: 100vh; pointer-events: none; }
+
+        .letter {
+            position: absolute; color: var(--accent);
+            font-size: 24px; cursor: pointer; pointer-events: auto;
+            transition: color 0.2s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .letter:hover { color: var(--text); }
+
+        #flash-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.1s ease-in-out;
+            background: #000;
+        }
+        #flash-container.active { opacity: 1; }
+
+        .content-img {
+            max-width: 80vw; max-height: 80vh;
+            object-fit: contain;
+            filter: invert(1);
+            display: block;
+        }
+
+        footer {
+            position: absolute; bottom: 40px; width: 100%; text-align: center;
+            font-size: 11px; color: var(--accent); letter-spacing: 0.5px;
+        }
+
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(40vw) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(40vw) rotate(-360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orbit-container" id="orbit"></div>
+
+    <div id="flash-container">
+        <img id="flash-img" class="content-img" src="" alt="Work">
+    </div>
+
+    <footer>
+        #k.ari.n schneider 2026 copyright karinschneider.com
+    </footer>
+
+    <script>
+        const workMap = {
+            'A': 'A.jpg', 'B': 'B.jpg', 'C': 'C.jpg', 'D': 'D.jpg', 'E': 'E.jpg',
+            'F': 'F.jpg', 'G': 'G.jpg', 'H': 'H.jpg', 'I': 'I.jpg', 'J': 'J.jpg',
+            'K': 'K.jpg', 'L': 'L.jpg', 'M': 'M.jpg', 'O': 'O.jpg', 'S': 'S.jpg',
+            'T': 'T.jpg', 'U': 'U.jpg', 'V': 'V.jpg', 'W': 'W.jpg', 'Y': 'Y.jpg'
+        };
+
+        const orbit = document.getElementById('orbit');
+        const flash = document.getElementById('flash-container');
+        const img = document.getElementById('flash-img');
+
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach((char, index) => {
+            const el = document.createElement('div');
+            el.className = 'letter';
+            el.innerText = char;
+            
+            el.style.left = '50%'; el.style.top = '50%';
+            el.style.animation = `orbit 120s linear infinite`;
+            el.style.animationDelay = `-${(120 / 26) * index}s`;
+            
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (workMap[char]) {
+                    img.src = workMap[char];
+                    flash.classList.add('active');
+                    
+                    clearTimeout(window.flashTimer);
+                    window.flashTimer = setTimeout(() => {
+                        flash.classList.remove('active');
+                    }, 1500);
+                }
+            });
+            orbit.appendChild(el);
+        });
+    </script>
+</body>
+</html>
