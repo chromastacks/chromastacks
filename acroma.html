@@ -81,10 +81,20 @@
 
 function toggleMembraneMode() {
     if (liveWindow && !liveWindow.closed) {
-        // Toggle both membrane layers
-        const layers = liveWindow.document.querySelectorAll('.mem-layer');
         isMultiply = !isMultiply;
-        layers.forEach(l => l.style.mixBlendMode = isMultiply ? 'multiply' : 'screen');
+        const layers = liveWindow.document.querySelectorAll('.mem-layer');
+
+        layers.forEach(layer => {
+            if (isMultiply) {
+                // Mode 1: Dark-fused (Archive's darks remain, light becomes camera)
+                layer.style.mixBlendMode = 'multiply';
+                layer.style.filter = 'invert(1)'; // Inverts the archive to create the "hole" for reality
+            } else {
+                // Mode 0: Light-fused (Archive's lights remain, dark becomes camera)
+                layer.style.mixBlendMode = 'screen';
+                layer.style.filter = 'invert(0)'; // Natural state
+            }
+        });
     }
 }
 
