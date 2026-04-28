@@ -45,19 +45,18 @@
         liveWindow = window.open("", "_blank", "fullscreen=yes");
         
         liveWindow.document.write(`
-            <style>
-                body { margin: 0; background: #000; overflow: hidden; }
-                #cam { position: absolute; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; }
-                .mem-layer { 
-                    position: absolute; width: 100vw; height: 100vh; object-fit: cover; z-index: 2; 
-                    transition: opacity 2s ease-in-out; opacity: 0; mix-blend-mode: screen;
-                    animation: breathe 8s infinite alternate ease-in-out; 
-                }
-                @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.05); } }
-            </style>
-            <video id="cam" autoplay playsinline></video>
-            <img id="m1" class="mem-layer" src=""><img id="m2" class="mem-layer" src="">
-        `);
+           <style>
+             body { margin: 0; background: #000; overflow: hidden; }
+             /* Ensure the video is forced to the bottom */
+             #cam { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; }
+             .mem-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 2; 
+                          transition: opacity 2s ease-in-out; opacity: 0; mix-blend-mode: screen; animation: breathe 8s infinite alternate ease-in-out; 
+        }
+        @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.05); } }
+             </style>
+             <video id="cam" autoplay playsinline muted></video>
+             <img id="m1" class="mem-layer" src=""><img id="m2" class="mem-layer" src="">
+`);
 
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(stream => liveWindow.document.getElementById('cam').srcObject = stream);
