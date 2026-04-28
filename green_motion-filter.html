@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { margin: 0; background: #00ff00; overflow: hidden; }
+        #c { 
+            display: block;
+            width: 100vw; 
+            height: 100vh; 
+            object-fit: cover; /* Ensures video fills screen */
+        }
+    </style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <script>
+        const canvas = document.getElementById('c');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        let prevFrame = null;
+
+        async function init() {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.play();
+            
+            video.onloadedmetadata = () => {
+                canvas.width = video.videoWidth; 
+                canvas.height = video.videoHeight;
+                render(video);
+            };
+        }
+
+        function render(video) {
+            ctx.drawImage(video, 0, 0);
+            let frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            let d = frame.data;
+
+            if (prevFrame) {
+                for (let i = 0; i < d.length; i += 4) {
+                    let diff = Math.abs(d[i] - prevFrame[i]) + 
+                               Math.abs(d[i+1] - prevFrame[i+1]) + 
+                               Math.abs(d[i+2] - prevFrame[i+2]);
+                    
+                    // If diff is small, it's static -> ERASE. 
+                    // If diff is large, it's movement -> KEEP.
+                    d[i+3] = (diff < 50) ? 0 : 255; 
+                }
+            }
+            prevFrame = new Uint8ClampedArray(d);
+            ctx.putImageData(frame, 0, 0);
+            requestAnimationFrame(() => render(video));
+        }
+        document.body.onclick = init;
+    </script>
+</body>
+</html>
