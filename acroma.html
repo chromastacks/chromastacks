@@ -86,13 +86,13 @@ function toggleMembraneMode() {
 
         layers.forEach(layer => {
             if (isMultiply) {
-                // Mode 1: Dark-fused (Archive's darks remain, light becomes camera)
+                // "Dark Lens": Archive's black shows, white becomes reality
                 layer.style.mixBlendMode = 'multiply';
-                layer.style.filter = 'invert(1)'; // Inverts the archive to create the "hole" for reality
+                layer.style.filter = 'none'; // Keep original colors, multiply handles the transparency
             } else {
-                // Mode 0: Light-fused (Archive's lights remain, dark becomes camera)
+                // "Light Lens": Archive's white shows, black becomes reality
                 layer.style.mixBlendMode = 'screen';
-                layer.style.filter = 'invert(0)'; // Natural state
+                layer.style.filter = 'none';
             }
         });
     }
