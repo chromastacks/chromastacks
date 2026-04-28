@@ -41,38 +41,50 @@
         });
 
         function startMembrane() {
-            if (!liveWindow || liveWindow.closed) {
-                liveWindow = window.open("", "_blank", "fullscreen=yes");
-                liveWindow.document.write(`
-                    <style>
-        body { margin: 0; background: #000; overflow: hidden; }
-        #cam { position: absolute; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; }
-        /* Changed 'contain' to 'cover' to fill the screen */
-        #membrane { position: absolute; width: 100vw; height: 100vh; object-fit: cover; z-index: 2; 
-                    transition: opacity 1s; opacity: 0; mix-blend-mode: screen; 
-                    animation: breathe 8s infinite alternate ease-in-out; }
-        @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.05); } }
-    </style>
-    <video id="cam" autoplay playsinline></video>
-    <img id="membrane" src="">
-`);
+    if (!liveWindow || liveWindow.closed) {
+        liveWindow = window.open("", "_blank", "fullscreen=yes");
+        
+        liveWindow.document.write(`
+            <style>
+                body { margin: 0; background: #000; overflow: hidden; }
+                #cam { position: absolute; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; }
+                .mem-layer { 
+                    position: absolute; width: 100vw; height: 100vh; object-fit: cover; z-index: 2; 
+                    transition: opacity 2s ease-in-out; opacity: 0; mix-blend-mode: screen;
+                    animation: breathe 8s infinite alternate ease-in-out; 
+                }
+                @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.05); } }
+            </style>
+            <video id="cam" autoplay playsinline></video>
+            <img id="m1" class="mem-layer" src=""><img id="m2" class="mem-layer" src="">
+        `);
 
-                navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(stream => liveWindow.document.getElementById('cam').srcObject = stream);
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => liveWindow.document.getElementById('cam').srcObject = stream);
 
-                let i = 0;
-                setInterval(() => {
-                    if (deck.length === 0 || liveWindow.closed) return;
-                    const mem = liveWindow.document.getElementById('membrane');
-                    mem.style.opacity = 0;
-                    setTimeout(() => {
-                        mem.src = deck[i % deck.length];
-                        mem.style.opacity = 0.6; // Allows viewer to see through the membrane
-                        i++;
-                    }, 1000);
-                }, 5000);
-            }
-        }
+        let i = 0;
+        setInterval(() => {
+            if (deck.length === 0 || liveWindow.closed) return;
+            
+            const active = (i % 2 === 0) ? liveWindow.document.getElementById('m1') : liveWindow.document.getElementById('m2');
+            const inactive = (i % 2 === 0) ? liveWindow.document.getElementById('m2') : liveWindow.document.getElementById('m1');
+            
+            active.src = deck[i % deck.length];
+            active.style.opacity = 0.7; // Constant density
+            inactive.style.opacity = 0;
+            i++;
+        }, 4000);
+    }
+}
+
+function toggleMembraneMode() {
+    if (liveWindow && !liveWindow.closed) {
+        // Toggle both membrane layers
+        const layers = liveWindow.document.querySelectorAll('.mem-layer');
+        isMultiply = !isMultiply;
+        layers.forEach(l => l.style.mixBlendMode = isMultiply ? 'multiply' : 'screen');
+    }
+}
 
         function toggleMembraneMode() {
             if (liveWindow && !liveWindow.closed) {
