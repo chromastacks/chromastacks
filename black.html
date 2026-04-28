@@ -1,95 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChromaStack | Black Monochrome</title>
     <style>
-    /* ... (keep your existing styles for #orbit, etc.) ... */
-    
-    #flash-container {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100vw; height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 100;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.1s ease-in-out;
-        background: #000; /* Clinical black background */
-    }
-    
-    #flash-container.active { opacity: 1; }
-
-    .content-img {
-        max-width: 80vw;
-        max-height: 80vh;
-        object-fit: contain;
-        display: block;
-        margin: 0 auto;
-        
-        /* REMOVED ALL FILTERS: The images must be processed locally 
-           to look like your desired X-ray output before upload. */
-        filter: none;
-        
-        /* GPU optimization for instant display */
-        will-change: transform;
-        transform: translateZ(0);
-        
-        /* Clinical, subtle edge lighting */
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-    }
-    
-    /* ... (rest of your CSS) ... */
-</style>
+        body { margin: 0; background: #000; height: 100vh; overflow: hidden; }
+        #x-ray-plate { 
+            width: 100vw; height: 100vh; object-fit: cover;
+            filter: grayscale(1) invert(1) contrast(8) brightness(1.1);
+        }
+    </style>
 </head>
 <body>
-
-    <div id="flash-container">
-    <img id="flash-img" class="content-img" src="" alt="Work" decoding="async">
-    </div>
-
-    <footer>
-        #k.ari.n schneider 2026 copyright karinschneider.com
-    </footer>
-
+    <canvas id="x-ray-plate"></canvas>
     <script>
-        const workMap = {
-            'A': 'images-black/a.jpg', 'B': 'images-black/b.jpg', 'C': 'images-black/c.jpg', 'D': 'images-black/d.jpg', 'E': 'images-black/e.jpg',
-            'F': 'images-black/f.jpg', 'G': 'images-black/g.jpg', 'H': 'images-black/h.jpg', 'I': 'images-black/i.jpg', 'J': 'images-black/j.jpg',
-            'K': 'images-black/k.jpg', 'L': 'images-black/l.jpg', 'M': 'images-black/m.jpg', 'O': 'images-black/o.jpg', 'S': 'images-black/s.jpg',
-            'T': 'images-black/t.jpg', 'U': 'images-black/u.jpg', 'V': 'images-black/v.jpg', 'W': 'images-black/w.jpg', 'Y': 'images-black/y.jpg'
-        };
+        const canvas = document.getElementById('x-ray-plate');
+        const ctx = canvas.getContext('2d');
 
-        const orbit = document.getElementById('orbit');
-        const flash = document.getElementById('flash-container');
-        const img = document.getElementById('flash-img');
-
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach((char, index) => {
-            const el = document.createElement('div');
-            el.className = 'letter';
-            el.innerText = char;
-            
-            el.style.left = '50%'; el.style.top = '50%';
-            el.style.animation = `orbit 120s linear infinite`;
-            el.style.animationDelay = `-${(120 / 26) * index}s`;
-            
-            el.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (workMap[char]) {
-                    img.src = workMap[char];
-                    flash.classList.add('active');
+        async function init() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+                
+                video.onloadedmetadata = () => {
+                    canvas.style.display = 'block';
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
                     
-                    clearTimeout(window.flashTimer);
-                    window.flashTimer = setTimeout(() => {
-                        flash.classList.remove('active');
-                    }, 1500);
-                }
-            });
-            orbit.appendChild(el);
-        });
+                    function render() {
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        requestAnimationFrame(render);
+                    }
+                    render();
+                };
+            } catch (err) {
+                console.error("Camera access error:", err);
+                alert("Camera access required: " + err.message);
+            }
+        }
+        
+        // Trigger on click to bypass browser autoplay blocks
+        window.addEventListener('click', init, { once: true });
     </script>
 </body>
 </html>
