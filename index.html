@@ -5,100 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karin Schneider</title>
     <style>
-        :root {
-            --bg-color: #f0f0f0;
-            --glass-bg: rgba(255, 255, 255, 0.2);
-            --border-light: rgba(255, 255, 255, 0.4);
-        }
+        :root { --bg-color: #f0f0f0; --glass-bg: rgba(255, 255, 255, 0.2); --border-light: rgba(255, 255, 255, 0.4); }
+        body { background-color: var(--bg-color); display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: 'Helvetica', Arial, sans-serif; }
+        .stack { display: flex; flex-direction: column; gap: 4px; width: 90%; max-width: 500px; padding: 20px; }
+        
+        .drive { display: block; text-decoration: none; color: #333; padding: 20px; text-align: center; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; font-size: 14px; background: var(--glass-bg); border: 1px solid var(--border-light); border-radius: 8px; backdrop-filter: blur(8px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: all 0.4s; }
+        .drive:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 30px rgba(0,0,0,0.1); color: #fff; }
 
-        body {
-            background-color: var(--bg-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: 'Helvetica', Arial, sans-serif;
-        }
-
-        /* The Stack Container */
-        .stack {
-            display: flex;
-            flex-direction: column;
-            gap: 4px; /* Slight gap between "hard drives" */
-            width: 90%;
-            max-width: 500px;
-            padding: 20px;
-        }
-
-        /* Each Hard Drive (Link) */
-        .drive {
-            display: block;
-            text-decoration: none;
-            color: #333;
-            padding: 20px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: bold;
-            font-size: 14px;
-            
-            /* Glassmorphism Effect */
-            background: var(--glass-bg);
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            position: relative;
-            overflow: hidden;
-            animation: pulse-line 4s infinite ease-in-out;
-        }
-
-        @keyframes pulse-line {
-            0% { border-color: rgba(255, 255, 255, 0.4); }
-            50% { border-color: rgba(255, 255, 255, 0.8); }
-            100% { border-color: rgba(255, 255, 255, 0.4); }
-        }
-
-        /* Hover States for Colors */
-        .drive:hover {
-            transform: translateY(-5px) scale(1.02);
-            color: #fff;
-        }
-
-        /* Specific Chroma Colors on Hover */
         .t-white:hover { background-color: rgba(255, 255, 255, 0.9); color: #000; box-shadow: 0 0 25px #fff; }
         .p-green:hover { background-color: rgba(152, 251, 152, 0.7); box-shadow: 0 0 25px #98fb98; }
         .blue:hover    { background-color: rgba(0, 102, 204, 0.7); box-shadow: 0 0 25px #0066cc; }
-        .achroma:hover { background-color: rgba(100, 100, 100, 0.5); border: 1px solid #fff; }
+        .achroma:hover { background-color: rgba(100, 100, 100, 0.5); border: 1px solid transparent; box-shadow: 0 0 25px #666; }
         .black:hover   { background-color: rgba(0, 0, 0, 0.85); box-shadow: 0 0 25px #000; }
         .red:hover     { background-color: rgba(204, 0, 0, 0.7); box-shadow: 0 0 25px #cc0000; }
-        .grey:hover    { background-color: rgba(128, 128, 128, 0.7); }
+        .grey:hover    { background-color: rgba(128, 128, 128, 0.7); box-shadow: 0 0 25px #808080; }
         .white:hover   { background-color: rgba(255, 255, 255, 0.5); color: #000; }
 
-        /* Footnote Styling */
-        footer {
-            margin-top: 80px;
-            padding: 60px 20px;
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: #999;
-            text-transform: uppercase;
-            font-family: monospace;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            text-align: center;
-        }
-
+        /* Footer pinned to bottom right */
+        footer { position: fixed; bottom: 20px; right: 20px; font-size: 10px; color: #666; letter-spacing: 1px; text-transform: lowercase; text-align: right; }
     </style>
 </head>
 <body>
 
-   <div class="stack">
+<div class="stack">
     <a href="titaniumwhite.html" class="drive t-white">Titanium White (2025–Ongoing)</a>  
-    <a href="#pale-green" class="drive p-green">Pale Green (2023–Ongoing)</a>
+    
+    <div class="drive p-green" style="display: flex; flex-direction: column; gap: 5px; padding: 15px;">
+        <span style="letter-spacing: 2px;">Green (2023–Ongoing)</span>
+        <div style="display: flex; gap: 15px; justify-content: center; font-size: 10px; opacity: 0.8;">
+            <a href="greenmotion.html" style="color: inherit; text-decoration: underline;">[Motion]</a>
+            <a href="greenextract.html" style="color: inherit; text-decoration: underline;">[Extract]</a>
+        </div>
+    </div>
+
     <a href="#achroma" class="drive achroma">Achroma (2022)</a>
     <a href="blue.html" class="drive blue">Blue (2020/26–Ongoing)</a>
     <a href="#black" class="drive black">Black (2014–Ongoing)</a>
@@ -106,9 +45,10 @@
     <a href="#grey" class="drive grey">Grey (2009)</a>
     <a href="#white" class="drive white">White (2004–2008)</a>
 </div>
-    <footer>
-        #K.ari.n Schneider 2026 &copy; <a href="https://karinschneider.com" style="color: inherit; text-decoration: none;">karinschneider.com</a>
-    </footer>
+
+<footer>
+    #K.ari.n Schneider 2026 © <a href="https://karinschneider.com" style="color: inherit; text-decoration: none;">karinschneider.com</a>
+</footer>
 
 </body>
 </html>
