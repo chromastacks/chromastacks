@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>K.S. SYSTEM | LIVE MEMBRANE ENGINE</title>
+    <style>
+        body { margin: 0; background: #111; color: #fff; font-family: monospace; display: flex; height: 100vh; overflow: hidden; }
+        #ledger { width: 300px; border-right: 1px solid #333; padding: 20px; overflow-y: auto; }
+        .asset-item { background: #222; padding: 10px; margin-bottom: 5px; cursor: pointer; border: 1px solid #444; }
+        #stage { flex-grow: 1; display: flex; justify-content: center; align-items: center; }
+        #controls { width: 250px; border-left: 1px solid #333; padding: 20px; }
+        .btn { display: block; width: 100%; padding: 15px; margin-bottom: 10px; background: #333; color: white; border: none; cursor: pointer; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div id="ledger">
+        <h3>IMAGE ASSET LEDGER</h3>
+        <input type="file" id="fileInput" multiple style="display:none">
+        <button class="btn" onclick="document.getElementById('fileInput').click()">ADD ASSETS</button>
+        <div id="asset-list"></div>
+    </div>
+
+    <div id="stage">MEMBRANE SYSTEM READY</div>
+
+    <div id="controls">
+        <h3>SYSTEM ENGINE</h3>
+        <button class="btn" onclick="startMembrane()">ACTIVATE MEMBRANE</button>
+        <button class="btn" onclick="toggleMembraneMode()">TOGGLE LENS MODE</button>
+    </div>
+
+    <script>
+        let deck = [];
+        let liveWindow = null;
+        let isMultiply = false;
+
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            for(let file of e.target.files) {
+                deck.push(URL.createObjectURL(file));
+                document.getElementById('asset-list').innerHTML += `<div class="asset-item">#${deck.length} | ${file.name}</div>`;
+            }
+        });
+
+        function startMembrane() {
+            if (!liveWindow || liveWindow.closed) {
+                liveWindow = window.open("", "_blank", "fullscreen=yes");
+                liveWindow.document.write(`
+                    <style>
+        body { margin: 0; background: #000; overflow: hidden; }
+        #cam { position: absolute; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; }
+        /* Changed 'contain' to 'cover' to fill the screen */
+        #membrane { position: absolute; width: 100vw; height: 100vh; object-fit: cover; z-index: 2; 
+                    transition: opacity 1s; opacity: 0; mix-blend-mode: screen; 
+                    animation: breathe 8s infinite alternate ease-in-out; }
+        @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.05); } }
+    </style>
+    <video id="cam" autoplay playsinline></video>
+    <img id="membrane" src="">
+`);
+
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => liveWindow.document.getElementById('cam').srcObject = stream);
+
+                let i = 0;
+                setInterval(() => {
+                    if (deck.length === 0 || liveWindow.closed) return;
+                    const mem = liveWindow.document.getElementById('membrane');
+                    mem.style.opacity = 0;
+                    setTimeout(() => {
+                        mem.src = deck[i % deck.length];
+                        mem.style.opacity = 0.6; // Allows viewer to see through the membrane
+                        i++;
+                    }, 1000);
+                }, 5000);
+            }
+        }
+
+        function toggleMembraneMode() {
+            if (liveWindow && !liveWindow.closed) {
+                const mem = liveWindow.document.getElementById('membrane');
+                isMultiply = !isMultiply;
+                mem.style.mixBlendMode = isMultiply ? 'multiply' : 'screen';
+            }
+        }
+    </script>
+</body>
+</html>
