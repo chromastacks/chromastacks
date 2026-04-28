@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        body { margin: 0; background: #000; overflow: hidden; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        
+        #x-ray-plate { 
+            display: none; 
+            width: 100vw; height: 100vh; object-fit: cover;
+            filter: grayscale(1) invert(1) contrast(8) brightness(1.1);
+        }
+
+        #start-btn {
+            color: #fff; font-family: monospace; font-size: 2rem; 
+            cursor: pointer; border: 1px solid #333; padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-btn">X</div>
+    <canvas id="x-ray-plate"></canvas>
+
+    <script>
+        const canvas = document.getElementById('x-ray-plate');
+        const ctx = canvas.getContext('2d');
+        const btn = document.getElementById('start-btn');
+
+        btn.onclick = async () => {
+            try {
+                // Mobile-friendly constraints
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "user" } 
+                });
+                
+                btn.style.display = 'none';
+                canvas.style.display = 'block';
+
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.setAttribute("playsinline", true); // Required for iOS
+                video.play();
+                
+                video.onloadedmetadata = () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    
+                    function render() {
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        requestAnimationFrame(render);
+                    }
+                    render();
+                };
+            } catch (err) {
+                alert("Camera error: " + err.message);
+            }
+        };
+    </script>
+</body>
+</html>
